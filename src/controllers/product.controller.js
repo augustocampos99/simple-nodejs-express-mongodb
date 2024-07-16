@@ -1,26 +1,79 @@
+import productModel from "../models/product.model.js";
 
 class ProductController {
 
-  getAll(req, res) {
-    res.status(200).send(['OK','OK','OK','OK']);
+  static async getAll(req, res) {
+    try {
+      const result = await productModel.find({});
+      res.status(200).send(result);
+        
+    } catch (error) {
+      res.status(500).send({ message: `Error request: ${error.message}` });  
+    }
   }
 
-  getOne(req, res) {
-    res.status(200).send(['OK']);
+  static async search(req, res) {
+    try {
+      const term = req.query.q;
+      const result = await productModel.find({ title: term });
+      res.status(200).send(result);
+        
+    } catch (error) {
+      res.status(500).send({ message: `Error request: ${error.message}` });  
+    }
   }
 
-  create(req, res) {
-    res.status(200).send(['Create']);
+  static async getById(req, res) {
+    try {
+      const id = req.params.id;
+      const result = await productModel.findById(id);
+      res.status(200).send(result);
+        
+    } catch (error) {
+      res.status(500).send({ message: `Error request: ${error.message}` });  
+    }
   }
 
-  update(req, res) {
-    res.status(200).send(['Update']);
+  static async create(req, res) {
+    try {
+      const result = await productModel.create(req.body);
+      res.status(201).send({
+        message : "created", 
+        data :result 
+      });
+        
+    } catch (error) {
+      res.status(500).send({ message: `Error request: ${error.message}` });  
+    }
   }
 
-  delete(req, res) {
-    res.status(200).send(['Delete']);
+  static async update(req, res) {
+    try {
+      const id = req.params.id;
+      const result = await productModel.findByIdAndUpdate(id, req.body);
+      res.status(200).send({
+        message : "updated", 
+        data :req.body 
+      });
+        
+    } catch (error) {
+      res.status(500).send({ message: `Error request: ${error.message}` });  
+    }
+  }
+
+  static async delete(req, res) {
+    try {
+      const id = req.params.id;
+      const result = await productModel.findByIdAndDelete(id);
+      res.status(200).send({
+        message : "removed"
+      });
+        
+    } catch (error) {
+      res.status(500).send({ message: `Error request: ${error.message}` });  
+    }
   }
 
 }
 
-export default new ProductController();
+export default ProductController;

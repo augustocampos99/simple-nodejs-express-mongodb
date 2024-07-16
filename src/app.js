@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from 'express';
 import getMongodbConnection from './configs/mondodb.connection.js';
 import router from './routes/router.js';

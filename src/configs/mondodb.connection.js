@@ -1,7 +1,7 @@
 import mongoose, { mongo } from 'mongoose';
 
 async function getMongodbConnection() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/store_d");
+  await mongoose.connect(process.env.MONGODB_CONNECTION);
   return mongoose.connection;
 }
 
