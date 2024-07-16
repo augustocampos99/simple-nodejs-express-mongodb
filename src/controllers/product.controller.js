@@ -50,7 +50,7 @@ class ProductController {
   static async update(req, res) {
     try {
       const id = req.params.id;
-      const result = await productModel.findByIdAndUpdate(id, req.body);
+      await productModel.findByIdAndUpdate(id, req.body);
       res.status(200).send({
         message : "updated", 
         data :req.body 
@@ -64,7 +64,7 @@ class ProductController {
   static async delete(req, res) {
     try {
       const id = req.params.id;
-      const result = await productModel.findByIdAndDelete(id);
+      await productModel.findByIdAndDelete(id);
       res.status(200).send({
         message : "removed"
       });
