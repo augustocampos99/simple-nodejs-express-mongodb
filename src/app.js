@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import getMongodbConnection from './configs/mondodb.connection.js';
 import router from './routes/router.js';
+import handleResponseError from './middlewares/handleReponseError.js';
 
 const connection = await getMongodbConnection();
 
@@ -20,6 +21,7 @@ const app = express();
 /** Middlewares */
 app.use(express.json());
 app.use(router);
+app.use(handleResponseError);
 
 
 /** Run server */

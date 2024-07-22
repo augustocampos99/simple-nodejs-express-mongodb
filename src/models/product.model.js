@@ -5,7 +5,10 @@ const productSchema = new mongoose.Schema({
   title: { type: String, require: true },
   price: { type: Number, require: true },
   amount: { type: Number, require: true }
-}, { versionKey: false });
+}, 
+{ 
+  versionKey: false 
+});
 
 const productModel = mongoose.model("products", productSchema);
 

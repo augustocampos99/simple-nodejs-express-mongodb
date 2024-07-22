@@ -2,39 +2,60 @@ import productModel from "../models/product.model.js";
 
 class ProductController {
 
-  static async getAll(req, res) {
+  static async getAll(req, res, next) {
     try {
-      const result = await productModel.find({});
+      let { page = 1, limit = 5 } = req.query;
+      page = parseInt(page);
+      limit = parseInt(limit);
+      
+      const result = await productModel.find({})
+      .skip((page - 1) * limit)
+      .limit(limit);
+
       res.status(200).send(result);
         
     } catch (error) {
-      res.status(500).send({ message: `Error request: ${error.message}` });  
+      next(error);  
     }
   }
 
-  static async search(req, res) {
+  static async search(req, res, next) {
     try {
+      let { page = 1, limit = 5 } = req.query;
+      page = parseInt(page);
+      limit = parseInt(limit);
+      
       const term = req.query.q;
-      const result = await productModel.find({ title: term });
+      const regex = new RegExp(term, "i"); // Regex for uppercase and lowercase
+      const result = await productModel.find({ title: regex })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
       res.status(200).send(result);
         
     } catch (error) {
-      res.status(500).send({ message: `Error request: ${error.message}` });  
+      next(error);  
     }
   }
 
-  static async getById(req, res) {
+  static async getById(req, res, next) {
     try {
       const id = req.params.id;
       const result = await productModel.findById(id);
+
+      if(result === null) {
+        res.status(404).send('');
+        return;
+      }
+
       res.status(200).send(result);
         
     } catch (error) {
-      res.status(500).send({ message: `Error request: ${error.message}` });  
+      next(error);  
     }
   }
 
-  static async create(req, res) {
+  static async create(req, res, next) {
     try {
       const result = await productModel.create(req.body);
       res.status(201).send({
@@ -43,25 +64,31 @@ class ProductController {
       });
         
     } catch (error) {
-      res.status(500).send({ message: `Error request: ${error.message}` });  
+      next(error);  
     }
   }
 
-  static async update(req, res) {
+  static async update(req, res, next) {
     try {
       const id = req.params.id;
-      await productModel.findByIdAndUpdate(id, req.body);
+      const result = await productModel.findByIdAndUpdate(id, req.body);
+
+      if(result === null) {
+        res.status(404).send('');
+        return;
+      }
+
       res.status(200).send({
         message : "updated", 
         data :req.body 
       });
         
     } catch (error) {
-      res.status(500).send({ message: `Error request: ${error.message}` });  
+      next(error);  
     }
   }
 
-  static async delete(req, res) {
+  static async delete(req, res, next) {
     try {
       const id = req.params.id;
       await productModel.findByIdAndDelete(id);
@@ -70,7 +97,7 @@ class ProductController {
       });
         
     } catch (error) {
-      res.status(500).send({ message: `Error request: ${error.message}` });  
+      next(error);  
     }
   }
 
